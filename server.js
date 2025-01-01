@@ -20,6 +20,19 @@ mongoose
 
 app.use("/books", bookRoutes)
 
+
+
+// Handle unknown routes
+app.use((req, res) => {
+  res.status(404).json({ message: "404 - Not Found" });
+});
+
+// Error-handling middleware
+app.use((err, req, res, next) => {
+  console.error(err.stack);
+  res.status(500).json({ message: "Internal Server Error" });
+});
+
 app.listen(PORT, () => {
   console.log(`Server is running on ${PORT}`);
 });

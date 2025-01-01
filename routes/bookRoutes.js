@@ -6,7 +6,7 @@ const route = express.Router();
 
 //create book
 
-route.post("/create", async(req, res) => {
+route.post("/create", async (req, res) => {
   try {
     const { title, author, publishedDate, genre, price } = req.body;
     const book = new Book({ title, author, publishedDate, genre, price });
@@ -41,14 +41,27 @@ route.put("/update/:id", async (req, res) => {
   }
 });
 
-route.delete("/delete/:id" ,async (req, res) => {
+route.delete("/delete/:id", async (req, res) => {
   try {
     const id = req.params.id;
     const deletedBook = await Book.findByIdAndDelete(id);
     if (!deletedBook) {
       res.status(404).json({ message: "user not found" });
     }
-    res.status(200).json({message:"Book deleted successfully"});
+    res.status(200).json({ message: "Book deleted successfully" });
+  } catch (error) {
+    res.status(500).json({ message: "Internal server error" });
+  }
+});
+
+route.get("/get/genre/:genre", async (req, res) => {
+  try {
+    const genre = req.params.genre;
+    const books = await Book.find({ genre: genre }); // Filtering books by genre
+    if (books.length === 0) {
+      res.status(404).json({ message: "books not found!" });
+    }
+    res.status(200).json(books);
   } catch (error) {
     res.status(500).json({ message: "Internal server error" });
   }
